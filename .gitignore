@@ -1,0 +1,8 @@
+*.o
+mangledheap
+sound
+doc
+Doxyfile
+tags
+libs/*
+include/*
