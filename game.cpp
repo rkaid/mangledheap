@@ -83,6 +83,11 @@ void Game::loop()
     command_type c;
     TCOD_key_t key;
 
+    display->update();
+    for (int fade=0; fade <= 255; fade++) {
+        TCODConsole::setFade(fade,TCODColor::black);
+        TCODConsole::flush();
+    }
     while (this->is_running()) {
         world->update_fov();
         display->update();

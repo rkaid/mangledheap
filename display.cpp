@@ -69,7 +69,7 @@ Display::Display()
     console = new TCODConsole(chars_x, chars_y);
     console->setCustomFont(FONT, TCOD_FONT_TYPE_GRAYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16, 16);
     console->root->setCustomFont(FONT, TCOD_FONT_TYPE_GRAYSCALE | TCOD_FONT_LAYOUT_ASCII_INROW, 16, 16);
-    console->root->setKeyboardRepeat(200, 100);
+    console->root->setKeyboardRepeat(200, 50);
 
     for(int i = 0; i<13; ++i) {
         message_t item;
@@ -320,4 +320,59 @@ void Display::flushem()
     console->flush();
 }
 
+void Display::intro()
+{
+#ifndef DEVELOPMENT_MODE
+    TCODConsole *c;
+
+    c = new TCODConsole(chars_x, chars_y);
+
+    int x = chars_x/2;
+    int y = 3;
+
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "M A N G L E D   H E A P !"); y++;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=3;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "It was really a beautiful day. On your way to the %s of Happiness, you heard birds chirping merrily, you saw deer", fiftyfifty() ? "Caverns" : "Dungeons"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "frolicking on the meadow and rabbits humping each other amongst the trees like there was no tomorrow."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Ah! To finally be an adventurer! A Hero! The subject of countless, soon-to-be-written epic songs!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Songs which for centuries will regale and inspire peasants and kings alike!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "So, with great anticipation and zero hesitation, torch in one hand and sword in the other,"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "you entered the darkness."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Two heartbeats later, a huge stone door slammed shut behind you. But you were fearless, and ventured on."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "And before you knew it you were assaulted by a gang of horrible monsters!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "You tried to fight, but - well - let's just say it would've been easier to be the headmaster of"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "the Aviation Academy for Pigs."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "It seems the rabbits were right after all."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Mere heartbeats later - if you still had heartbeats to count - a voice booms all around you:"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "YOU HAVE BEEN TRANSFORMED INTO A MANGLED HEAP!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, ""); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "But as you're standing on the Threshold of Death's Door, a mysterious force pulls you back to Life!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Unfortunately, you are still a mangled heap."); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "On the positive side, you sense that you now have the power to attach body parts to the mangled heap"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "that once was your body. With a sudden feeling of great hope and optimism, you embark on a new quest -"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "to build a new body (as strange as that may seem)!"); y+=2;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "It's not every day you get a second chance at life, right?"); y+=2;
+
+    y += 6;
+    c->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "- PRESS ANY KEY TO CONTINUE -"); y+=2;
+
+
+
+    TCODConsole::blit(c, 0, 0, chars_x, chars_y, TCODConsole::root, 0.1, 0.1);
+    TCODConsole::flush();
+    display->wait_for_key();
+
+    for (int fade=255; fade >= 0; --fade) {
+        TCODConsole::setFade(fade,TCODColor::black);
+        TCODConsole::flush();
+    }
+
+    delete c;
+#endif
+}
 // vim: fdm=syntax guifont=Terminus\ 8

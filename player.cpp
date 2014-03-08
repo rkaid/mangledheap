@@ -33,7 +33,7 @@ Player::Player()
 {
         setchar('@');
         setcolors(TCODColor::white, TCODColor::red);
-        setfovradius(8);
+        setfovradius(9);
         mangled = new Stat(100,100);
         heapiness = new Stat(100,100);
 }

@@ -65,6 +65,7 @@ class Display {
                 void print_npc_name(int x, int y, char *name);
                 void print_npc_name(int x, int y, char *name, TCODColor fg, TCODColor bg);
                 void flushem();
+                void intro();
         protected:
         private:
                 bool touched;

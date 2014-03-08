@@ -1,5 +1,5 @@
 CXX = g++ 
-CXXFLAGS = -Wall -I. -Iinclude -g -ggdb -DDEBUG_ON
+CXXFLAGS = -Wall -I. -Iinclude -g -ggdb -DDEBUG_ON -DDEVELOPMENT_MODE
 DEBUGFLAGS = -g -ggdb -DDEBUG_ON
 LIBS = -lm -ltcodxx -lSDL -lSDL_mixer -Llib -Wl,-rpath=lib
 LDFLAGS=$(LIBS)     #,-rpath=lib 
