@@ -91,6 +91,13 @@ int dice(int num, int sides, signed int modifier)
 int ri(int a, int b) 
 {
     int result;
+
+    if(a > b) {
+        int tmp = b;
+        b = a;
+        a = tmp;
+    }
+
     result = (a + (rand() % (b-a+1)));
 
     return result;
@@ -144,8 +151,8 @@ void init_item_definitions()
 
 int main(int argc, char **argv)
 {
-    //unsigned int seed = time(0);
-    //srand(seed);
+    unsigned int seed = time(0);
+    srand(seed);
 
     //game = new Game;
     //audio = new SoundEngine;

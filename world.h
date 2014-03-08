@@ -72,6 +72,10 @@ class Cell {
                 Item        *item;
 };
 
+typedef struct {
+    int x1, x2, y1, y2;
+} room_t;
+
 class Area {
         private:
                 TCODBsp *bsp;
@@ -83,16 +87,21 @@ class Area {
                 void generate();
                 void place_furniture();
                 direction generate_starting_room();
+                void generate_drunken_walk();
+                void generate_type_1();
                 void horizontal_line(int y);
                 void horizontal_line(int x, int y, int x2);
                 void horizontal_line(int x, int y, int x2, cell_type t);
                 void vertical_line(int x);
                 void vertical_line(int x, int y, int y2);
                 void vertical_line(int x, int y, int y2, cell_type t);
+                room_t generate_room(int maxx, int maxy);
                 void frame();
+                void fill();
                 void build_tcodmap();
                 bool cell_is_visible(int x, int y);
                 bool is_walkable(int x, int y);
+                bool only_walls(int x1, int y1, int x2, int y2);
                 void make_room(int x1, int y1, int x2, int y2);
                 void make_door(int x, int y, bool open);
                 void make_stairs_up();

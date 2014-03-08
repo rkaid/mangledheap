@@ -94,7 +94,7 @@ bool Cell::is_visible()
 void Cell::set_wall()
 {
     this->type = wall;
-    this->fg = TCODColor::darkerFlame;
+    this->fg = TCODColor::darkestRed;
     this->bg = TCODColor::black;
     c = '#';
 }
@@ -295,6 +295,20 @@ void Area::update_visibility()
     }
 }
 
+bool Area::only_walls(int x1, int y1, int x2, int y2)
+{
+    int i, j;
+
+    for(i = x1; i <= x2; ++i) {
+        for(j = y1; j <= y2; ++j) {
+            if(this->cell[i][j].get_type() != wall)
+                return false;
+        }
+    }
+
+    return true;
+}
+
 direction Area::generate_starting_room()
 {
     int x1, x2, y1, y2;
@@ -336,13 +350,93 @@ direction Area::generate_starting_room()
     return d;
 }
 
+void Area::generate_drunken_walk()
+{
+    int i,j,x,y,q,r,num;
+
+    q = ri(70, AREA_MAX_X);
+    r = ri(50, AREA_MAX_Y);
+    q = AREA_MAX_X;
+    r = AREA_MAX_Y;
+
+    for(i = 2; i < q; ++i) {
+        x = AREA_MAX_X / 2;
+        y = AREA_MAX_Y / 2;
+        for(j = 2; j < r; ++j) {
+            num = ri(1,4);
+            switch(num) {
+                case 1: x++; break;
+                case 2: x--; break;
+                case 3: y++; break;
+                case 4: y--; break;
+            }
+
+            this->cell[x][y].set_floor();
+        }
+    }
+}
+
+room_t Area::generate_room(int maxx, int maxy)
+{
+    room_t room;
+    int min = 4;
+    bool finished = false;
+    room.x1 = room.x2 = room.y1 = room.y2 = 0;
+    while(!finished) {
+        int x1, y1, x2, y2;
+        x1 = ri(min, AREA_MAX_X-maxx);
+        x2 = x1 + ri(min, maxx);
+        y1 = ri(min, AREA_MAX_Y-maxy);
+        y2 = y1 + ri(min, maxy);
+
+
+        // check that there is nothing else in the chosen room
+        if(this->only_walls(x1, y1, x2, y2)) {
+            this->make_room(x1, y1, x2, y2);
+            room.x1 = x1;
+            room.x2 = x2;
+            room.y1 = y1;
+            room.y2 = y2;
+            finished = true;
+        }
+    }
+
+    return room;
+}
+
+void Area::generate_type_1()
+{
+    vector<room_t> roomlist;
+
+    // Fill the area with walls
+    this->fill();
+
+    // Generate a drunken-walk-cavern
+    this->generate_drunken_walk();
+
+    for(int a=0;a<10;++a) {
+        room_t room;
+
+        // Generate a room
+        room = this->generate_room(15,15);
+
+        // Add room to list of rooms
+        roomlist.push_back(room);
+    }
+
+    this->build_tcodmap();
+
+    vector<room_t>::iterator it;
+    for(it = roomlist.begin(); it != roomlist.end(); ++it) {
+
+    }
+
+    lights_on = false;
+}
+
 void Area::generate()
 {
-    this->frame();
-    this->build_tcodmap();
-    lights_on = false;
-
-
+    this->generate_type_1();
 }
 
 void Area::place_furniture()
@@ -357,8 +451,19 @@ void Area::frame()
     vertical_line(AREA_MAX_X - 2);
 }
 
+void Area::fill()
+{
+    for(int x=0;x<AREA_MAX_X;++x)
+        for(int y=0;y<AREA_MAX_Y;++y)
+            this->cell[x][y].set_wall();
+}
+
 void Area::make_room(int x1, int y1, int x2, int y2)
 {
+    for(int i=x1; i<=x2; ++i)
+        for(int j=y1; j<=y2; ++j)
+            this->cell[i][j].set_floor();
+
     horizontal_line(x1, y1, x2);
     horizontal_line(x1, y2, x2);
     vertical_line(x1, y1, y2);
