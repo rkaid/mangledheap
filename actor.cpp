@@ -6,6 +6,8 @@
  * See LICENSE.txt for licensing information.
  */
 
+#include <string>
+
 using namespace std;
 #include "common.h"
 #include "actor.h"
@@ -23,16 +25,29 @@ const char *special_name[] = {
     "(none)",
 };
 
-const char *bodypart_string[] = {
+string bodypart_string[] = {
     "head",
-    "chest",
+    "torso",
     "left arm",
     "right arm",
     "left foot",
     "right foot",
-    "guts",
-    "face",
-    "groin",
+    "left hand",
+    "right hand",
+    "left leg",
+    "right leg"
+};
+
+
+BodyPart::BodyPart()
+{
+    attached = false;
+};
+
+BodyPart::BodyPart(bodypart_e t)
+{
+    type = t;
+    attached = false;
 };
 
 Stat::Stat()
@@ -318,7 +333,7 @@ void Actor::attack_physical(Actor *target)
                 if(target != player)
                     display->messagec(COLOR_FEAR, "You see %s attacking %s!", this->getname(), target->getname());
                 if(target == player)
-                    display->messagec(COLOR_FEAR, "%s %s you in the %s!", this->getname(), fiftyfifty() ? "hits" : "kicks", bodypart_string[ri(0,8)]);
+                    display->messagec(COLOR_FEAR, "%s %s you in the !", this->getname()/*, fiftyfifty() ? "hits" : "kicks", bodypart_string[ri(0,8)].c_str()*/);
             }
         } else {    // this == player
             display->messagec(COLOR_GOOD, "You attack %s, causing %d amounts of damage!", target->getname(), damage);

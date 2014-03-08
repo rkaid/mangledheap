@@ -5,9 +5,9 @@ LIBS = -lm -ltcodxx -lSDL -lSDL_mixer -Llib -Wl,-rpath=lib
 LDFLAGS=$(LIBS)     #,-rpath=lib 
 DEFINES = -DDEBUG_ON
  
-SOURCES = main.cpp actor.cpp display.cpp game.cpp command.cpp player.cpp sound.cpp npc.cpp world.cpp item.cpp
-HEADERS = actor.h display.h game.h command.h debug.h player.h sound.h npc.h world.h item.h
-OBJS    = main.o actor.o display.o game.o command.o player.o sound.o npc.o world.o item.o
+SOURCES = main.cpp actor.cpp display.cpp game.cpp command.cpp player.cpp sound.cpp monster.cpp world.cpp item.cpp
+HEADERS = actor.h display.h game.h command.h debug.h player.h sound.h monster.h world.h item.h
+OBJS    = main.o actor.o display.o game.o command.o player.o sound.o monster.o world.o item.o
 
 mangledheap: $(OBJS)
 	$(CXX) -DDEBUG_ON $(DEFINES) $(LDFLAGS) -o $@ $(OBJS)

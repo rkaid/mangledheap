@@ -112,6 +112,29 @@ class Stat {
         };
 };
 
+enum bodypart_e {
+    head = 0,
+    torso,
+    left_arm,
+    right_arm,
+    left_foot,
+    right_foot,
+    left_hand,
+    right_hand,
+    left_leg,
+    right_leg
+};
+
+class BodyPart {
+    public:
+        BodyPart();
+        BodyPart(bodypart_e t);
+        ~BodyPart() { };
+        string name;
+        bodypart_e type;
+        bool attached;
+};
+
 class Actor {
     public:
         Actor();
@@ -175,6 +198,7 @@ class Actor {
         Area *area;                // in which area is this actor?
         bool alive;
         vector <SpecialAttack> special;
+        vector <BodyPart> bparts;
 
         Stat *str, *health;
     protected:

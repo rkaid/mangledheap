@@ -62,8 +62,8 @@ class Display {
                 TCOD_key_t get_key(bool flush);
                 TCOD_key_t wait_for_key();
                 TCODColor get_random_color();
-                void print_npc_name(int x, int y, char *name);
-                void print_npc_name(int x, int y, char *name, TCODColor fg, TCODColor bg);
+                void print_monster_name(int x, int y, char *name);
+                void print_monster_name(int x, int y, char *name, TCODColor fg, TCODColor bg);
                 void flushem();
                 void intro();
         protected:

@@ -20,13 +20,13 @@ using namespace std;
 #include "display.h"
 #include "game.h"
 #include "player.h"
-#include "npc.h"
+#include "monster.h"
 #include "world.h"
 #include "item.h"
 
 extern Display *display;
 extern Player *player;
-extern NPC *npc;
+extern Monster *monster;
 extern World *world;
 extern Game g;
 
@@ -65,10 +65,10 @@ void Game::end_turn()
     if(player->has_moved()) {
         /*
         for(int i=0;i<12;i++) {
-            if(npc[i].is_alive()) {
-                //if(player->can_see(npc[i].getx(), npc[i].gety()))
-                //        display->message("You can see %s!", npc[i].getname());
-                npc[i].ai();
+            if(monster[i].is_alive()) {
+                //if(player->can_see(monster[i].getx(), monster[i].gety()))
+                //        display->message("You can see %s!", monster[i].getname());
+                monster[i].ai();
             }
         }
         */

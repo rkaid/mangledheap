@@ -24,7 +24,7 @@ using namespace std;
 #include "display.h"
 #include "game.h"
 #include "player.h"
-#include "npc.h"
+#include "monster.h"
 #include "sound.h"
 #include "world.h"
 #include "item.h"
@@ -32,7 +32,7 @@ using namespace std;
 Game g;
 Display *display;
 Player *player;
-NPC *npc;
+Monster *monster;
 World *world;
 SoundEngine *audio;
 
@@ -41,9 +41,10 @@ SoundEngine *audio;
  * Reading them from a text file would be nicer, but would also require more work.
  */
 struct item_definition item_definitions[] = {
-    // name                 char  type         flags       value chance 
+    // name                 char  type         flags                 attack defense chance 
     // Weapons
-    { "knife",               ')', it_weapon,   IF_WIELDABLE, 10, 30 },
+    { "knife",               ')', it_weapon,   IF_WIELDABLE|IF_CAN_CUT, 10,    0,     30 },
+    { "sword",               ')', it_weapon,   IF_WIELDABLE|IF_CAN_CUT, 15,    2,     30 },
     // Clothing
     // Tools and other things
 };
@@ -117,13 +118,14 @@ void clean_up()
     delete player;
     delete world;
     //delete audio;
-    //delete [] npc;
+    //delete [] monster;
     //delete game;
     delete display;
 }
 
-void init_npcs()
+void init_monsters()
 {
+    monster = new Monster[500];
 }
 
 void init_areas()
@@ -171,7 +173,7 @@ int main(int argc, char **argv)
     init_item_definitions();
     init_areas();
     init_player();
-    //init_npcs();
+    init_monsters();
 
     display = new Display;
 
