@@ -30,6 +30,7 @@ class Game {
                 bool wizmode;
                 Clock clock;
                 vector<Item> itemdef;
+                int monster_counter;
         protected:
         private:
                 Command cmd;

@@ -38,6 +38,7 @@ Game::Game()
     version = "0.0.1";
     wizmode = false;
     clock.settime(0, 0, 0);
+    monster_counter = 0;
 
     running = true;
 }

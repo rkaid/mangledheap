@@ -592,7 +592,18 @@ void Area::generate()
 
     this->frame();
     this->build_tcodmap();
+    this->spawn_monsters(ri(5, 25));
     lights_on = false;
+}
+
+void Area::spawn_monsters(int num)
+{
+    int c = g.monster_counter;
+    for(int i = 0; i < num; ++i) {
+
+    }
+
+    g.monster_counter = c;
 }
 
 void Area::place_furniture()

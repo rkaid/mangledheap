@@ -112,8 +112,7 @@ class Area {
                 void set_all_visible();
                 void set_all_invisible();
                 void update_visibility();
-                /*void set_id(area_id_type identifier) { id = identifier; };
-                area_id_type get_id() { return id; };*/
+                void spawn_monsters(int num);
                 const char *get_area_name();
                 coord_t get_random_floor_cell();
                 coord_t get_random_empty_floor_cell();

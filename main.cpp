@@ -167,6 +167,8 @@ int main(int argc, char **argv)
 
     //game = new Game;
     //audio = new SoundEngine;
+    
+    monster_counter = 0;
     world = new World;
     player = new Player;
 
