@@ -500,7 +500,6 @@ tryagain:
             sx = dx + ri(1,5) + (i*20);
             sy = ri(1,5) + (j*20);
             r = this->generate_room(sx, sy, 20, 20);
-            DBG("i,j = %d,%d     sx,sy=%d,%d", i, j, sx, sy);
             if(r.x1 == 0)
                 goto tryagain;
             roomlist.push_back(r);

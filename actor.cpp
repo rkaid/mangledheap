@@ -35,6 +35,20 @@ const char *bodypart_string[] = {
     "groin",
 };
 
+Stat::Stat()
+{
+    cur = 0;
+    max = 0;
+    base = 0;
+}
+
+Stat::Stat(int c, int m)
+{
+    cur = c;
+    base = c;
+    max = m;
+}
+
 Actor::Actor()
 {
     role = role_unknown;
@@ -43,6 +57,8 @@ Actor::Actor()
     alive = true;
     enemy = NULL;
     moved_ = false;
+    str = new Stat(10,10);
+    health = new Stat(100,100);
 }
 
 bool Actor::is_male()
@@ -241,6 +257,7 @@ void Actor::move_se()
     this->move(1, 1);
 }
 
+/*
 int Actor::getstat(enum_stat which)
 {
     return this->stat[(int)which];
@@ -260,12 +277,12 @@ void Actor::decstat(enum_stat which, int amount)
 void Actor::incstat(enum_stat which, int amount)
 {
     this->stat[which] += amount;
-    if(which == sBody || which == sMind || which == sSoul) {
+    *if(which == s) {
         if(this->stat[which] > 20)
             this->stat[which] = 20;
-    } 
+    }
 }
-
+*/
 
 void Actor::use_stairs()
 {
@@ -275,12 +292,12 @@ void Actor::set_in_combat()
 {
 }
 
-bool Actor::pass_roll(enum_stat stat)
+bool Actor::pass_roll(Stat *stat)
 {
     int x;
 
     x = dice(1,21,0);
-    if(x <= this->getstat(stat))
+    if(x <= stat->get())
         return true;
     else
         return false;
@@ -288,10 +305,10 @@ bool Actor::pass_roll(enum_stat stat)
 
 void Actor::attack_physical(Actor *target)
 {
-    int tohit = target->getstat(sBody);
+    int tohit = target->str->get();
     int d = dice(1, 20, 0);
     if(d >= tohit) {
-        int damage = dice(1, this->getstat(sBody), ability_modifier(this->getstat(sBody)));
+        int damage = dice(1, this->str->get(), ability_modifier(this->str->get()));
         if(damage <= 0)
             damage = 1;
         if(this != player) {
@@ -307,8 +324,8 @@ void Actor::attack_physical(Actor *target)
             display->messagec(COLOR_GOOD, "You attack %s, causing %d amounts of damage!", target->getname(), damage);
         }
         //display->message("%s HIT %s! %d damage.", this->name, target->getname(), damage);
-        target->decstat(sHealth, damage);
-        if(target->getstat(sHealth) <= 0) {
+        target->health -= damage;
+        if(target->health->get() <= 0) {
             target->kill();
             this->enemy = NULL;
 

@@ -27,10 +27,10 @@ enum attack_type {
 };
 
 enum enum_stat {
-    sMind = 0,
-    sBody,
-    sSoul,
-    sHealth
+    sHealth = 0,
+    sMangle,
+    sHeap,
+    sStr
 };
 
 enum special_type {
@@ -73,6 +73,45 @@ class SpecialAttack {
         int level;
 };
 
+class Stat {
+    private:
+        int cur;
+        int max;
+        int base;
+    public:
+        Stat();
+        Stat(int c, int m);
+        ~Stat() { };
+
+        void set(int x) { cur = x; };
+        int  get() { return cur; };
+        void setmax(int m) { max = m; };
+        
+        Stat& operator+=(const int x) {
+            if((cur+x) <= max)
+                cur += x;
+            
+            return *this;
+        };
+        
+        Stat& operator++(const int x) {
+            (*this)+=1;
+            return *this;
+        };
+
+        Stat& operator-=(const int x) {
+            if((cur-x) > 0)
+                cur -= x;
+            
+            return *this;
+        };
+        
+        Stat& operator--(const int x) {
+            (*this)-=1;
+            return *this;
+        };
+};
+
 class Actor {
     public:
         Actor();
@@ -100,10 +139,10 @@ class Actor {
         void setgender(int i) { male = i; };
         char *getname();
 
-        void decstat(enum_stat which, int amount = 1);
+        /*void decstat(enum_stat which, int amount = 1);
         void incstat(enum_stat which, int amount = 1);
         void setstat(enum_stat which, int what);
-        int  getstat(enum_stat which);
+        int  getstat(enum_stat which);*/
 
         void setfovradius(int amount) { fovradius = amount; };
         int  getfovradius() { return fovradius; };
@@ -115,7 +154,7 @@ class Actor {
         void attack(Actor *target, attack_type type = body);
         void attack_physical(Actor *target);
 
-        bool pass_roll(enum_stat stat);
+        bool pass_roll(Stat *stat);
         int  add_special_attack(special_type t); 
 
         // Movement
@@ -136,6 +175,8 @@ class Actor {
         Area *area;                // in which area is this actor?
         bool alive;
         vector <SpecialAttack> special;
+
+        Stat *str, *health;
     protected:
     private:
         bool male;

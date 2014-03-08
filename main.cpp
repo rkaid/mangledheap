@@ -139,7 +139,7 @@ void init_player()
     for(int i=0;i<80;++i)
         cout << " " << endl;
 
-    player->create();
+    //player->create();
 
     player->setxy(world->get_random_walkable_cell(0));
     player->setprevxy(player->getxy());
@@ -182,6 +182,7 @@ int main(int argc, char **argv)
     //audio->play_sound(SOUND_EFFECT_STORM01, 0);
 
     display->message("");     // "kickstart" the messaging system!
+    display->intro();
     g.loop();
 
     clean_up();

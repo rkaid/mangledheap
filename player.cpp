@@ -31,10 +31,11 @@ extern Game g;
 
 Player::Player()
 {
-        setstat(sHealth, 100);
         setchar('@');
         setcolors(TCODColor::white, TCODColor::red);
-        setfovradius(33);
+        setfovradius(8);
+        mangled = new Stat(100,100);
+        heapiness = new Stat(100,100);
 }
 
 Player::~Player()
@@ -73,8 +74,10 @@ void Player::create()
         char *name_c;
         string input;
         char c, d;
-        int mind, body, soul;
+        int sstr;
 
+        for(int a=0;a<10;a++)
+            cout << endl;
         cout << "Welcome to " << g.name << " - v" << g.version << endl << endl;
         cout << "First, you will need to create your player character using this very simple character generator." <<endl;
         cout << "What's your name? ";
@@ -86,27 +89,19 @@ void Player::create()
         cout << "Now we will randomly generate your stats:" << endl;
 again:
         if(0) {            // do each one 3 times and take average result - makes it less likely to get stats in the upper or lower end of the scale. might be good for a "difficult mode"?
-                mind = 0;
-                mind += 10 + ri(-9, 10);
-                mind += 10 + ri(-9, 10);
-                mind += 10 + ri(-9, 10);
-                mind /= 3;
-                body = 0;
-                body += 10 + ri(-9, 10);
-                body += 10 + ri(-9, 10);
-                body += 10 + ri(-9, 10);
-                body /= 3;
-                soul = 0;
-                soul += 10 + ri(-9, 10);
-                soul += 10 + ri(-9, 10);
-                soul += 10 + ri(-9, 10);
-                soul /= 3;
+                sstr = 0;
+                sstr += 10 + ri(-9, 10);
+                sstr += 10 + ri(-9, 10);
+                sstr += 10 + ri(-9, 10);
+                sstr /= 3;
         } else {
-                mind = 10 + ri(-9, 10);
-                body = 10 + ri(-9, 10);
-                soul = 10 + ri(-9, 10);
+                sstr = 10 + ri(-9, 10);
+                sstr = 10 + ri(-9, 10);
+                sstr = 10 + ri(-9, 10);
         }
 
+        cout << endl;
+        cout << "Strength: " << sstr << endl;
         cout << "Are you happy with these results (Y/n)? ";
         c = getchar();
         d = c;
@@ -116,6 +111,9 @@ again:
         if(d == 'n')
                 goto again;
 finish:
+
+        this->str->set(sstr);
+        this->str->setmax(sstr);
         return;
 }
 
@@ -145,6 +143,7 @@ void Player::use_stairs()
                 player->moved();
         } else {
                 display->messagec(COLOR_ERROR, "There are no stairs here!");
+                display->touch();
         }
 }
 
@@ -154,7 +153,7 @@ void Player::set_in_combat()
 
 void Player::endturn()
 {
-        g.clock += ri(5,10);
+        //g.clock += ri(5,10);
 }
 
 

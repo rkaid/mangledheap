@@ -37,7 +37,6 @@ NPC::NPC()
 {
     TCODColor fg, bg;
 
-    setstat(sHealth, 100);
     setchar('@');
 
     fg = display->get_random_color();
@@ -118,9 +117,6 @@ void NPC::random_ai()
 
 void NPC::set_random_goal()
 {
-    int type;
-
-    type = ri(1,100);
 }
 
 void NPC::set_in_combat()

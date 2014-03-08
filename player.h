@@ -27,6 +27,9 @@ class Player: public Actor {
                 void die();
                 void use_stairs();
                 void set_in_combat();
+
+                Stat *mangled;
+                Stat *heapiness;
         private:
                 // Stats
                 //int body;         // 1-20, how physically strong you are

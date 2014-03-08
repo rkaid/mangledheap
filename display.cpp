@@ -125,6 +125,8 @@ TCOD_key_t Display::wait_for_key()
     ev = TCODSystem::waitForEvent(TCOD_EVENT_ANY,&key,&mouse,true);
     if (ev == TCOD_EVENT_KEY_PRESS)
         return key;
+
+    return key;
 }
 
 TCODColor Display::get_random_color()
@@ -146,25 +148,20 @@ void Display::draw_left_window()
     x = LEFT_X+1;
     y = LEFT_Y+2;
 
-    console->printEx(x+16, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "xxx1"); y++; y++;
-    console->printEx(x+16, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "xxx2"); y++; y++;
+    console->printEx(x+17, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Name: %s", player->getname()); y++; y++;
+    console->printEx(x+17, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Dungeon level: %d", world->current_area+1); y++; y++;
     console->print(x, y, ""); y++;
     y++;
     console->print(x, y, ""); y++;
     console->print(x, y, ""); y++;
     console->print(x, y, ""); y++;
     y++;
-    console->print(x, y, "Health:"); y++;
+    x+=17;
     console->setDefaultForeground(TCODColor::azure);
-    console->print(x, y, ""); y++;
-    console->setDefaultForeground(TCODColor::white);
-    console->print(x, y, ""); y++;
-    console->setDefaultForeground(TCODColor::azure);
-    console->print(x, y, ""); y++;
-    console->setDefaultForeground(TCODColor::white);
-    console->print(x, y, ""); y++;
-    console->setDefaultForeground(TCODColor::azure);
-    console->print(x, y, ""); y++;
+    console->printEx(x-1, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Strength:    %d", player->str->get()); y++;
+    console->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Health:      %d", player->health->get()); y++;
+    console->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Mangledness: %d", player->mangled->get()); y++;
+    console->printEx(x, y, TCOD_BKGND_DEFAULT, TCOD_CENTER, "Heapiness:   %d", player->heapiness->get()); y++;
     console->setDefaultForeground(TCODColor::white);
 
     y++;

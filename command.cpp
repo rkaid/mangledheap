@@ -47,6 +47,7 @@ command_t command_set_normal[] = {
         { { TCODK_CHAR,  '.', 1, 0, 0, 0, 0, 0 }, cmd_wait },
         { { TCODK_CHAR,  'c', 1, 0, 0, 0, 0, 0 }, cmd_close_door },
         { { TCODK_CHAR,  '<', 1, 0, 0, 0, 0, 0 }, cmd_stairs },
+        { { TCODK_CHAR,  '>', 1, 0, 0, 0, 0, 0 }, cmd_stairs },
         { { TCODK_CHAR,  'a', 1, 0, 0, 0, 0, 0 }, cmd_activate },
         // Special moves!
         { { TCODK_1,      0,  1, 0, 0, 0, 0, 0 }, cmd_special_1 },
