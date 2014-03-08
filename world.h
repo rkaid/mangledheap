@@ -18,7 +18,7 @@
 #define AREA_MAX_X 90
 #define AREA_MAX_Y 60
 
-#define MAX_AREAS 12
+#define MAX_AREAS 42
 
 enum cell_type {
         nothing = 0,
@@ -89,13 +89,16 @@ class Area {
                 direction generate_starting_room();
                 void generate_drunken_walk();
                 void generate_type_1();
+                void generate_type_2();
+                room_t generate_room(int maxx, int maxy);
+                room_t generate_room(int startx, int starty, int maxx, int maxy);
                 void horizontal_line(int y);
                 void horizontal_line(int x, int y, int x2);
                 void horizontal_line(int x, int y, int x2, cell_type t);
                 void vertical_line(int x);
                 void vertical_line(int x, int y, int y2);
                 void vertical_line(int x, int y, int y2, cell_type t);
-                room_t generate_room(int maxx, int maxy);
+                void line(int x1, int y1, int x2, int y2);
                 void frame();
                 void fill();
                 void build_tcodmap();

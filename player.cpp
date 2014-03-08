@@ -121,29 +121,31 @@ finish:
 
 void Player::use_stairs()
 {
-        /*if(player->area->cell[player->getx()][player->gety()].get_type() == stairs_up) {
+        if(player->area->cell[player->getx()][player->gety()].get_type() == stairs_up) {
                 world->clear_inhabitant(player->area, player->getxy());
-                world->current_area++;
+                world->current_area--;
                 world->a = &world->area[world->current_area];
                 player->area = world->a;
                 player->setxy(player->area->stairs_down);
                 world->set_inhabitant(player);
                 display->clear();
+                display->touch();
                 display->update();
                 player->moved();
         } else if(player->area->cell[player->getx()][player->gety()].get_type() == stairs_down) {
                 world->clear_inhabitant(player->area, player->getxy());
-                world->current_area--;
+                world->current_area++;
                 world->a = &world->area[world->current_area];
                 player->area = world->a;
                 player->setxy(player->area->stairs_up);
                 world->set_inhabitant(player);
                 display->clear();
+                display->touch();
                 display->update();
                 player->moved();
         } else {
                 display->messagec(COLOR_ERROR, "There are no stairs here!");
-        }*/
+        }
 }
 
 void Player::set_in_combat()

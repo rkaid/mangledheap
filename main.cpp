@@ -88,6 +88,15 @@ int dice(int num, int sides, signed int modifier)
     return result;
 }
 
+void swap(int& a, int& b)
+{
+    int tmp;
+
+    tmp = a;
+    a = b;
+    b = tmp;
+}
+
 int ri(int a, int b) 
 {
     int result;

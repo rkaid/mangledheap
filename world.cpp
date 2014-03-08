@@ -94,7 +94,7 @@ bool Cell::is_visible()
 void Cell::set_wall()
 {
     this->type = wall;
-    this->fg = TCODColor::darkestRed;
+    this->fg = fiftyfifty() ? TCODColor::darkGrey : TCODColor::grey;
     this->bg = TCODColor::black;
     c = '#';
 }
@@ -356,8 +356,8 @@ void Area::generate_drunken_walk()
 
     q = ri(70, AREA_MAX_X);
     r = ri(50, AREA_MAX_Y);
-    q = AREA_MAX_X;
-    r = AREA_MAX_Y;
+    q = AREA_MAX_X*2;
+    r = AREA_MAX_Y*2;
 
     for(i = 2; i < q; ++i) {
         x = AREA_MAX_X / 2;
@@ -371,7 +371,8 @@ void Area::generate_drunken_walk()
                 case 4: y--; break;
             }
 
-            this->cell[x][y].set_floor();
+            if(x < AREA_MAX_X && y < AREA_MAX_Y)
+                this->cell[x][y].set_floor();
         }
     }
 }
@@ -381,14 +382,17 @@ room_t Area::generate_room(int maxx, int maxy)
     room_t room;
     int min = 4;
     bool finished = false;
+    int tries;
+
+    tries = 0;
     room.x1 = room.x2 = room.y1 = room.y2 = 0;
     while(!finished) {
         int x1, y1, x2, y2;
+
         x1 = ri(min, AREA_MAX_X-maxx);
         x2 = x1 + ri(min, maxx);
         y1 = ri(min, AREA_MAX_Y-maxy);
         y2 = y1 + ri(min, maxy);
-
 
         // check that there is nothing else in the chosen room
         if(this->only_walls(x1, y1, x2, y2)) {
@@ -399,6 +403,52 @@ room_t Area::generate_room(int maxx, int maxy)
             room.y2 = y2;
             finished = true;
         }
+
+        ++tries;
+        if(tries > 10)
+            return room;
+    }
+
+    return room;
+}
+
+room_t Area::generate_room(int startx, int starty, int maxx, int maxy)
+{
+    room_t room;
+    bool finished = false;
+    int min = 4;
+    int tries = 0;
+
+    room.x1 = room.x2 = room.y1 = room.y2 = 0;
+    while(!finished) {
+        int x1, y1, x2, y2;
+        x1 = startx;
+        y1 = starty;
+        x2 = x1 + ri(min, maxx);
+        y2 = y1 + ri(min, maxy);
+
+        if(x1 >= AREA_MAX_X)
+            return room;
+        if(y1 >= AREA_MAX_Y)
+            return room;
+        if(x2 >= AREA_MAX_X)
+            x2 = AREA_MAX_X-1;
+        if(y2 >= AREA_MAX_Y)
+            y2 = AREA_MAX_Y-1;
+
+        // check that there is nothing else in the chosen room
+        //if(this->only_walls(x1, y1, x2, y2)) {
+            this->make_room(x1, y1, x2, y2);
+            room.x1 = x1;
+            room.x2 = x2;
+            room.y1 = y1;
+            room.y2 = y2;
+            finished = true;
+        //}
+
+        ++tries;
+        if(tries > 10)
+            return room;
     }
 
     return room;
@@ -434,9 +484,116 @@ void Area::generate_type_1()
     lights_on = false;
 }
 
+void Area::generate_type_2()
+{
+    vector<room_t> roomlist;
+    room_t r;
+    this->fill();
+    int dx;
+
+    dx = ri(2,4);
+
+    for(int i = 0; i < 4; ++i) {
+        for(int j = 0; j < 3; ++j) {
+            int sx, sy;
+tryagain:
+            sx = dx + ri(1,5) + (i*20);
+            sy = ri(1,5) + (j*20);
+            r = this->generate_room(sx, sy, 20, 20);
+            DBG("i,j = %d,%d     sx,sy=%d,%d", i, j, sx, sy);
+            if(r.x1 == 0)
+                goto tryagain;
+            roomlist.push_back(r);
+        }
+    }
+
+   /* vector<room_t>::iterator it;
+
+    for(it = roomlist.begin(); it != roomlist.end(); ++it) {
+        int sx, sy, ex, ey;
+        vector<room_t>::iterator dest;
+        dest = it;
+        dest++;
+        if(dest == roomlist.end())
+            goto finish1;
+
+        sx = it->x1 + ((it->x2 - it->x1)/2);
+        sy = it->y1 + ((it->y2 - it->y1)/2);
+
+        ex = dest->x1 + ((dest->x2 - dest->x1)/2);
+        ey = dest->y1 + ((dest->y2 - dest->y1)/2);
+
+        this->line(sx, sy, ex, ey);
+    }
+
+finish1:*/
+
+    /*
+     * Horrible and quite static hallway generation code follows!
+     */
+    int srcroom[]  = { 0, 3, 6, 1, 4,  7, 2, 5,  8 };
+    int destroom[] = { 3, 6, 9, 4, 7, 10, 5, 8, 11 };
+    room_t src, dest;
+
+    for(int q=0;q<9;q++) {
+        int sx, sy, ex, ey;
+        
+        src = roomlist.at(srcroom[q]);
+        dest = roomlist.at(destroom[q]);
+
+        sx = src.x1 + ((src.x2 - src.x1)/2);
+        sy = src.y1 + ((src.y2 - src.y1)/2);
+
+        ex = dest.x1 + ((dest.x2 - dest.x1)/2);
+        ey = dest.y1 + ((dest.y2 - dest.y1)/2);
+
+        this->line(sx, sy, ex, ey);
+    }
+
+    int srcroom2[]  = { 0, 3, 6,  9, 1, 4, 7, 10 };
+    int destroom2[] = { 1, 4, 7, 10, 2, 5, 8, 11 };
+
+    for(int q=0;q<9;q++) {
+        int sx, sy, ex, ey;
+        
+        src = roomlist.at(srcroom2[q]);
+        dest = roomlist.at(destroom2[q]);
+
+        sx = src.x1 + ((src.x2 - src.x1)/2);
+        sy = src.y1 + ((src.y2 - src.y1)/2);
+
+        ex = dest.x1 + ((dest.x2 - dest.x1)/2);
+        ey = dest.y1 + ((dest.y2 - dest.y1)/2);
+
+        this->line(sx, sy, ex, ey);
+    }
+
+    this->build_tcodmap();
+    lights_on = false;
+}
+
 void Area::generate()
 {
-    this->generate_type_1();
+    int type;
+
+    type = ri(1,3);
+
+    switch(type) {
+        case 1:
+            this->generate_type_2();
+            break;
+        case 2:
+            this->fill();
+            this->generate_drunken_walk();
+            break;
+        case 3:
+            this->generate_type_2();
+            this->generate_drunken_walk();
+    };
+
+    this->frame();
+    this->build_tcodmap();
+    lights_on = false;
 }
 
 void Area::place_furniture()
@@ -539,6 +696,48 @@ again:
         return co;
     else
         goto again;
+}
+
+/*
+ * Adapted from the article on Bresenham's line algorithm on en.wikipedia.org
+ */
+void Area::line(int x1, int y1, int x2, int y2)
+{
+    bool steep = (abs(y2 - y1) > abs(x2 - x1));
+    if(steep) {
+        swap(x1, y1);
+        swap(x2, y2);
+    }
+
+    if(x1 > x2) {
+        swap(x1, x2);
+        swap(y1, y2);
+    }
+
+    int dx = x2 - x1;
+    int dy = abs(y2 - y1);
+
+    float error = dx / 2;
+    int ystep;
+    int y = y1;
+
+    if(y1 < y2)
+        ystep = 1;
+    else
+        ystep = -1;
+
+    for(int x = x1; x <= x2; ++x) {
+        if(steep)
+            this->cell[y][x].set_floor();
+        else
+            this->cell[x][y].set_floor();
+
+        error -= dy;
+        if(error < 0) {
+            y += ystep;
+            error += dx;
+        }
+    }
 }
 
 void Area::horizontal_line(int y)
@@ -845,14 +1044,14 @@ cell_type World::get_cell_type(Area *where, coord_t co)
 void World::generate_stairs()
 {
     int i;
-
-    for(i=1; i<=10; i++) {
+    
+    for(i=1; i<=40; i++) {
         world->area[i].make_stairs_down();
         world->area[i].make_stairs_up();
     }
 
-    world->area[0].make_stairs_up();
-    world->area[11].make_stairs_down();
+    world->area[0].make_stairs_down();
+    world->area[41].make_stairs_up();
 }
 
 

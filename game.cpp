@@ -163,6 +163,7 @@ void Game::loop()
     }
 
     display->messagec(COLOR_FATAL, "Game over. Press ESC to exit.");
+    display->touch();
     display->update();
 
     key = display->get_key(true);
