@@ -123,7 +123,7 @@ coord_t Actor::getxy()
 
 void Actor::draw()
 {
-    if(world->a->cell_is_visible(co.x, co.y)) {
+    if(this->area->cell_is_visible(co.x, co.y)) {
         display->putmap(this->co.x, this->co.y, this->c, this->fg, this->bg);
         display->touch();
     }

@@ -20,11 +20,6 @@
 
 #define MAX_AREAS 12
 
-enum area_id_type {
-    dungeon = 0,
-    testblah
-};
-
 enum cell_type {
         nothing = 0,
         wall,
@@ -80,14 +75,14 @@ class Cell {
 class Area {
         private:
                 TCODBsp *bsp;
-                area_id_type id;
+                //area_id_type id;
         protected:
         public:
                 Area();
                 ~Area();
-                void generate(area_id_type identifier);
+                void generate();
+                void place_furniture();
                 direction generate_starting_room();
-                void place_furniture(area_id_type identifier);
                 void horizontal_line(int y);
                 void horizontal_line(int x, int y, int x2);
                 void horizontal_line(int x, int y, int x2, cell_type t);
@@ -105,8 +100,8 @@ class Area {
                 void set_all_visible();
                 void set_all_invisible();
                 void update_visibility();
-                void set_id(area_id_type identifier) { id = identifier; };
-                area_id_type get_id() { return id; };
+                /*void set_id(area_id_type identifier) { id = identifier; };
+                area_id_type get_id() { return id; };*/
                 const char *get_area_name();
                 coord_t get_random_floor_cell();
                 coord_t get_random_empty_floor_cell();
@@ -142,8 +137,8 @@ class World {
                 void draw_cell(coord_t co);
                 void draw_cell(int x, int y, TCODColor fg, TCODColor bg);
                 void update_fov();
-                coord_t get_random_walkable_cell(area_id_type id);
-                coord_t get_random_floor_cell(area_id_type id);
+                coord_t get_random_walkable_cell(int id);
+                coord_t get_random_floor_cell(int id);
                 void set_inhabitant(Actor *actor);
                 void clear_inhabitant(Area *where, coord_t co);
                 Area *get_current_area() { return &area[current_area]; };

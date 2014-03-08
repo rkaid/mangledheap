@@ -101,7 +101,7 @@ void clean_up()
     delete player;
     delete world;
     //delete audio;
-    delete [] npc;
+    //delete [] npc;
     //delete game;
     delete display;
 }
@@ -125,7 +125,7 @@ void init_player()
 
     player->create();
 
-    player->setxy(world->get_random_walkable_cell(dungeon));
+    player->setxy(world->get_random_walkable_cell(0));
     player->setprevxy(player->getxy());
     player->area = world->get_current_area();
     world->set_inhabitant(player);
@@ -155,7 +155,7 @@ int main(int argc, char **argv)
     init_item_definitions();
     init_areas();
     init_player();
-    init_npcs();
+    //init_npcs();
 
     display = new Display;
 

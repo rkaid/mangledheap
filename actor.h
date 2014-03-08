@@ -131,7 +131,7 @@ class Actor {
         void moved(bool b = true) { moved_ = b; };
         bool has_moved() { return moved_; };
 
-        area_id_type area_id;
+        int area_id;
         Actor *enemy;              // public enemy haha!
         Area *area;                // in which area is this actor?
         bool alive;

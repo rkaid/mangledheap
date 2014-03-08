@@ -63,6 +63,7 @@ void Game::intro()
 void Game::end_turn()
 {
     if(player->has_moved()) {
+        /*
         for(int i=0;i<12;i++) {
             if(npc[i].is_alive()) {
                 //if(player->can_see(npc[i].getx(), npc[i].gety()))
@@ -70,6 +71,7 @@ void Game::end_turn()
                 npc[i].ai();
             }
         }
+        */
 
         player->endturn();
         player->look();
@@ -150,7 +152,7 @@ void Game::loop()
                 break;
                 // Debug/development commands:
             case cmd_all_visible:
-                world->a->set_all_visible();
+                player->area->set_all_visible();
                 world->update_fov();
                 g.clock += 3700;
                 wizmode = true;

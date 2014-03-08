@@ -131,7 +131,7 @@ void NPC::set_in_combat()
 
 void NPC::use_stairs()
 {
-    if(this->area->cell[this->getx()][this->gety()].get_type() == stairs_up) {
+    /*if(this->area->cell[this->getx()][this->gety()].get_type() == stairs_up) {
         world->clear_inhabitant(this->area, this->getxy());
         int a = (int) this->area_id;
         a++;
@@ -151,7 +151,7 @@ void NPC::use_stairs()
         world->set_inhabitant(this);
         delete path;
         path = new TCODPath(this->area->tcodmap, 1.0f);
-    } 
+    } */
 }
 
 /*
