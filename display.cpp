@@ -225,15 +225,15 @@ void Display::putmap(int x, int y, int c, TCODColor &fg, TCODColor &bg)
     console->putCharEx(MAP_X + x, MAP_Y + y, c, fg, bg);
 }
 
-void Display::print_monster_name(int x, int y, char *name)
-{
-    //console->printEx(LEFT_X + 1, LEFT_Y + 20, TCOD_BKGND_DEFAULT, TCOD_LEFT, name);
-}
-
-void Display::print_monster_name(int x, int y, char *name, TCODColor fg, TCODColor bg)
-{
-    //console->printEx(LEFT_X + 1, LEFT_Y + 20, TCOD_BKGND_DEFAULT, TCOD_LEFT, name);
-}
+//void Display::print_monster_name(int x, int y, char *name)
+//{
+//    //console->printEx(LEFT_X + 1, LEFT_Y + 20, TCOD_BKGND_DEFAULT, TCOD_LEFT, name);
+//}
+//
+//void Display::print_monster_name(int x, int y, char *name, TCODColor fg, TCODColor bg)
+//{
+//    //console->printEx(LEFT_X + 1, LEFT_Y + 20, TCOD_BKGND_DEFAULT, TCOD_LEFT, name);
+//}
 
 void Display::print_messages()
 {
