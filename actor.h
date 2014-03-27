@@ -94,7 +94,7 @@ class Stat {
             return *this;
         };
         
-        Stat& operator++(const int x) {
+        Stat& operator++() {
             (*this)+=1;
             return *this;
         };
@@ -106,7 +106,7 @@ class Stat {
             return *this;
         };
         
-        Stat& operator--(const int x) {
+        Stat& operator--() {
             (*this)-=1;
             return *this;
         };

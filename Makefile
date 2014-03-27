@@ -1,29 +1,154 @@
-CXX = g++ 
-CXXFLAGS = -Wall -I. -Iinclude -g -ggdb -DDEBUG_ON -DDEVELOPMENT_MODE
-DEBUGFLAGS = -g -ggdb -DDEBUG_ON
-LIBS = -lm -ltcodxx -lSDL -lSDL_mixer -Llib -Wl,-rpath=lib
-LDFLAGS=$(LIBS)     #,-rpath=lib 
-DEFINES = -DDEBUG_ON
- 
-SOURCES = main.cpp actor.cpp display.cpp game.cpp command.cpp player.cpp sound.cpp monster.cpp world.cpp item.cpp
-HEADERS = actor.h display.h game.h command.h debug.h player.h sound.h monster.h world.h item.h
-OBJS    = main.o actor.o display.o game.o command.o player.o sound.o monster.o world.o item.o
+# Generic Makefile gotten from https://github.com/mbcrawfo/GenericMakefile
+#
+# Adapted to my own needs.
 
-mangledheap: $(OBJS)
-	$(CXX) -DDEBUG_ON $(DEFINES) $(LDFLAGS) -o $@ $(OBJS)
 
-mangledheap-debug: $(OBJS)
-	$(CXX) -DDEBUG_ON $(DEBUGFLAGS) $(DEFINES) $(LDFLAGS) -o $@ $(OBJS)
+#### PROJECT SETTINGS ####
+# The name of the executable to be created
+BIN_NAME = mangledheap
+# Compiler used
+CXX = g++
+# Extension of source files used in the project
+SRC_EXT = cpp
+# Path to the source directory, relative to the makefile
+SRC_PATH = .
+# General compiler flags
+COMPILE_FLAGS = -Wall -Wextra
+# Additional release-specific flags
+RCOMPILE_FLAGS = -D NDEBUG
+# Additional debug-specific flags
+DCOMPILE_FLAGS = -g -ggdb -D DEBUG_ON -D DEVELOPMENT_MODE
+# Add additional include paths
+INCLUDES = -I $(SRC_PATH)/ -I $(SRC_PATH)/include
+# General linker settings
+LINK_FLAGS = -lm -ltcodxx -lSDL -lSDL_mixer -Llib -Wl,-rpath=lib
+# Additional release-specific linker settings
+RLINK_FLAGS = 
+# Additional debug-specific linker settings
+DLINK_FLAGS = 
+# Destination directory, like a jail or mounted system
+DESTDIR = /
+# Install path (bin/ is appended automatically)
+INSTALL_PREFIX = usr/local
+#### END PROJECT SETTINGS ####
 
-.: $(SOURCES) $(HEADERS)
-	$(CXX) -DDEBUG_ON $(CXXFLAGS) $(DEFINES) -o $@ $(SOURCES)
+# Generally should not need to edit below this line
 
+# Verbose option, to output compile and link commands
+export V = false
+export CMD_PREFIX = @
+ifeq ($(V),true)
+	CMD_PREFIX = 
+endif
+
+# Combine compiler and linker flags
+release: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS) $(RCOMPILE_FLAGS)
+release: export LD_FLAGS := $(LD_FLAGS) $(LINK_FLAGS) $(RLINK_FLAGS)
+debug: export CXXFLAGS := $(CXXFLAGS) $(COMPILE_FLAGS) $(DCOMPILE_FLAGS)
+debug: export LD_FLAGS := $(LD_FALGS) $(LINK_FLAGS) $(DLINK_FLAGS)
+
+# Build and output paths
+release: export BUILD_PATH := build/release
+release: export BIN_PATH := bin/release
+debug: export BUILD_PATH := build/debug
+debug: export BIN_PATH := bin/debug
+install: export BIN_PATH := bin/release
+
+# Find all source files in the source directory
+SOURCES = $(shell find $(SRC_PATH)/ -name '*.$(SRC_EXT)')
+# Set the object file names, with the source directory stripped
+# from the path, and the build path prepended in its place
+OBJECTS = $(SOURCES:$(SRC_PATH)/%.$(SRC_EXT)=$(BUILD_PATH)/%.o)
+# Set the dependency files that will be used to add header dependencies
+DEPS = $(OBJECTS:.o=.d)
+
+# Macros for timing compilation
+TIME_FILE = $(dir $@).$(notdir $@)_time
+START_TIME = date '+%s' > $(TIME_FILE)
+END_TIME = read st < $(TIME_FILE) ; \
+	$(RM) $(TIME_FILE) ; \
+	st=$$((`date '+%s'` - $$st - 86400)) ; \
+	echo `date -u -d @$$st '+%H:%M:%S'` 
+
+# Version macros
+# Comment/remove this section to remove versioning
+VERSION = $(shell git describe --tags --long --dirty --always | \
+	sed 's/v\([0-9]*\)\.\([0-9]*\)-\?.*-\([0-9]*\)-\(.*\)/\1 \2 \3 \4/g')
+VERSION_MAJOR = $(word 1, $(VERSION))
+VERSION_MINOR = $(word 2, $(VERSION))
+VERSION_REVISION = $(word 3, $(VERSION))
+VERSION_HASH = $(word 4, $(VERSION))
+VERSION_STRING = \
+	"$(VERSION_MAJOR).$(VERSION_MINOR).$(VERSION_REVISION).$(VERSION_HASH)"
+override CXXFLAGS := $(CXXFLAGS) -D VERSION_MAJOR=$(VERSION_MAJOR) \
+	-D VERSION_MINOR=$(VERSION_MINOR) \
+	-D VERSION_REVISION=$(VERSION_REVISION) \
+	-D VERSION_HASH=\"$(VERSION_HASH)\"
+
+# Standard, non-optimized release build
+.PHONY: release
+release: dirs
+	@echo "Beginning release build v$(VERSION_STRING)"
+	@$(START_TIME)
+	@$(MAKE) all --no-print-directory
+	@echo -n "Total build time: "
+	@$(END_TIME)
+
+# Debug build for gdb debugging
+.PHONY: debug
+debug: dirs
+	@echo "Beginning debug build v$(VERSION_STRING)"
+	@$(START_TIME)
+	@$(MAKE) all --no-print-directory
+	@echo -n "Total build time: "
+	@$(END_TIME)
+
+# Create the directories used in the build
+.PHONY: dirs
+dirs:
+	@echo "Creating directories"
+	@mkdir -p $(dir $(OBJECTS))
+	@mkdir -p $(BIN_PATH)
+
+# Installs to the set path
+.PHONY: install
+install:
+	@echo "Installing to $(DESTDIR)$(INSTALL_PREFIX)/bin"
+	@install -m 0755 $(BIN_PATH)/$(BIN_NAME) $(DESTDIR)$(INSTALL_PREFIX)/bin
+
+# Removes all build files
+.PHONY: clean
 clean:
-	rm -f *.o mangledheap 
+	@echo "Deleting $(BIN_NAME) symlink"
+	@$(RM) $(BIN_NAME)
+	@echo "Deleting directories"
+	@$(RM) -r build
+	@$(RM) -r bin
 
-depend:
-	$(CXX) $(CXXFLAGS) -MM *.cpp > .deps
+# Main rule, checks the executable and symlinks to the output
+all: $(BIN_PATH)/$(BIN_NAME)
+	@echo "Making symlink: $(BIN_NAME) -> $<"
+	@$(RM) $(BIN_NAME)
+	@ln -s $(BIN_PATH)/$(BIN_NAME) $(BIN_NAME)
 
-all: mangledheap
+# Link the executable
+$(BIN_PATH)/$(BIN_NAME): $(OBJECTS)
+	@echo "Linking: $@"
+	@$(START_TIME)
+	$(CMD_PREFIX)$(CXX) $(OBJECTS) $(LD_FLAGS) -o $@
+	@echo -en "\t Link time: "
+	@$(END_TIME)
 
-include .deps
+# Add dependency files, if they exist
+-include $(DEPS)
+
+# Source file rules
+# After the first compilation they will be joined with the rules from the
+# dependency files to provide header dependencies
+$(BUILD_PATH)/%.o: $(SRC_PATH)/%.$(SRC_EXT)
+	@echo "Compiling: $< -> $@"
+	@$(START_TIME)
+	$(CMD_PREFIX)$(CXX) $(CXXFLAGS) $(INCLUDES) -MP -MMD -c $< -o $@
+	@echo -en "\t Compile time: "
+	@$(END_TIME)
+
