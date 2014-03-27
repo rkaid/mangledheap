@@ -6,3 +6,7 @@ Doxyfile
 tags
 libs/*
 include/*
+build/*
+bin/*
+Makefile.crap
+Makefile.win64
