@@ -35,7 +35,9 @@ Game::Game()
     init_commands(&this->cmd);
 
     name = "Mangled Heap!";
-    version = "0.0.1";
+    version = VERSION_STRING;
+    v_major = VERSION_MAJOR;
+    v_minor = VERSION_MINOR;
     wizmode = false;
     clock.settime(0, 0, 0);
     monster_counter = 0;

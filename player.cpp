@@ -78,7 +78,11 @@ void Player::create()
 
         for(int a=0;a<10;a++)
             cout << endl;
+#ifdef DEVELOPMENT_MODE
         cout << "Welcome to " << g.name << " - v" << g.version << endl << endl;
+#else
+        cout << "Welcome to " << g.name << " - v" << g.v_major << "." << g.v_minor << endl << endl;
+#endif
         cout << "First, you will need to create your player character using this very simple character generator." <<endl;
         cout << "What's your name? ";
         getline(cin, input);

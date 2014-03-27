@@ -26,7 +26,8 @@ class Game {
                 void end_turn();
                 
                 const char *name;  // the name of the game!
-                const char *version;
+                string version;
+                int v_major, v_minor;
                 bool wizmode;
                 Clock clock;
                 vector<Item> itemdef;
